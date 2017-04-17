@@ -5,11 +5,8 @@ from rest import REST
 import json
 
 class Organization(object):
-    """Object that contains information and tasks relating to a PureCloud Org"""
 
-    def __init__(self, parameters):
-        """Populates it's variables with org specific IDs"""
-        self.environment = parameters['env']
+    def __init__(self):
         self.my_session = REST('my_session')
         access_token = oauthUP.login(
             env='tca',
@@ -18,14 +15,13 @@ class Organization(object):
             encoded_client='YzA1YjNjN2YtMmU4NC00ZjhhLWJmYzEtNzU5YjJlNzBmMGM2OjlEczZaaV82eWJ5UzcyclNsQmpCSGt5QV9jdGVRcjNuZS0wcXBOakVENkk=',
             rest_session=self.my_session
         )
-        print(str(access_token))
         self.headers = {"Authorization": "bearer " + access_token,'content-type': 'application/json'}
 
     def get_all_phones(self):
         pageNumber = 1
         allPhones = []
         while True:
-            time.sleep(20)
+            time.sleep(10)
             try:
                 phones = self.get_phones(pageNumber)
                 phones = json.loads(phones.text)
@@ -41,8 +37,7 @@ class Organization(object):
                 print(str(exception_details))
                 
     def get_phones(self, pageNumber):
-        """Collects basic edge/asg data, returns response object"""
-        url = "https://api.inin{0}.com/".format(self.environment)
+        url = "https://api.inintca.com/"
         url += "api/v2/telephony/providers/edges/phones?pageNumber={0}&pageSize=100".format(pageNumber)
         response = None
         try:
@@ -53,11 +48,10 @@ class Organization(object):
         return response
 
     def delete_phones(self, phones):
-        """Collects basic edge/asg data, returns response object"""
         print("Deleting " + str(len(phones)) + " phones")
         for index in range(0, len(phones)):
-            time.sleep(10)
-            url = "https://api.inin{0}.com/".format(self.environment)
+            time.sleep(1)
+            url = "https://api.inintca.com/"
             url += "api/v2/telephony/providers/edges/phones/{0}".format(phones[index]['id'])
             response = None
             try:
